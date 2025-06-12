@@ -19,12 +19,11 @@
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">Filtrar</button>
             </div>
-            <div class="col-md-4">
-            <a href="{{ route('reportes.historial.pdf', ['fecha_inicio' => request('fecha_inicio'), 'fecha_fin' => request('fecha_fin')]) }}" class="btn btn-danger">
-                Descargar PDF
-            </a>
+            <div class="col-md-4 mt-2">
+                <a href="{{ route('reportes.historial.pdf', ['desde' => request('desde'), 'hasta' => request('hasta')]) }}" class="btn btn-danger">
+                    Descargar PDF
+                </a>
             </div>
-
         </div>
     </form>
 
@@ -55,7 +54,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="text-center">No hay registros</td>
+                    <td colspan="8" class="text-center">No hay registros</td>
                 </tr>
             @endforelse
         </tbody>

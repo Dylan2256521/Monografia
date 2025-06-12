@@ -113,7 +113,7 @@
   let maps = {};
 
   $(document).ready(function () {
-    $('#tabla-residuos').DataTable({
+    const tabla = $('#tabla-residuos').DataTable({
       language: {
         lengthMenu: 'Mostrar _MENU_ registros por página',
         zeroRecords: 'No se encontraron resultados',
@@ -162,30 +162,43 @@
       }, 3000);
     }
 
-    // Inicializar mapas
-    $('[id^=mapModal-]').on('shown.bs.modal', function (e) {
-      const trigger = $(e.relatedTarget);
-      const lat = trigger.data('lat');
-      const lng = trigger.data('lng');
-      const nombre = trigger.data('nombre');
-      const mapId = trigger.data('map');
+    // Función para inicializar mapas en el modal
+    function inicializarMapaModal() {
+      $('[id^=mapModal-]').off('shown.bs.modal').on('shown.bs.modal', function (e) {
+        const trigger = $(e.relatedTarget);
+        const lat = trigger.data('lat');
+        const lng = trigger.data('lng');
+        const nombre = trigger.data('nombre');
+        const mapId = trigger.data('map');
 
-      if (maps[mapId]) {
-        maps[mapId].remove();
-      }
+        // Si ya hay un mapa inicializado para este ID, lo removemos para evitar conflictos
+        if (maps[mapId]) {
+          maps[mapId].remove();
+        }
 
-      maps[mapId] = L.map(mapId).setView([lat, lng], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(maps[mapId]);
+        // Creamos el mapa con Leaflet
+        maps[mapId] = L.map(mapId).setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(maps[mapId]);
 
-      L.marker([lat, lng]).addTo(maps[mapId])
-        .bindPopup('Ubicación de: ' + nombre)
-        .openPopup();
+        L.marker([lat, lng]).addTo(maps[mapId])
+          .bindPopup('Ubicación de: ' + nombre)
+          .openPopup();
 
-      setTimeout(() => {
-        maps[mapId].invalidateSize();
-      }, 200);
+        // Ajustar tamaño para que se muestre bien
+        setTimeout(() => {
+          maps[mapId].invalidateSize();
+        }, 200);
+      });
+    }
+
+    // Inicializar mapas por primera vez
+    inicializarMapaModal();
+
+    // Re-inicializar cuando DataTable dibuja la tabla (cambia página, filtra, ordena)
+    tabla.on('draw', function () {
+      inicializarMapaModal();
     });
   });
 </script>

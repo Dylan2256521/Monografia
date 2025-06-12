@@ -45,8 +45,9 @@ public function descargarPDF(Request $request)
 {
     $query = Residuo::with('categoria');
 
-    if ($request->filled('fecha_inicio') && $request->filled('fecha_fin')) {
-        $query->whereBetween('created_at', [$request->fecha_inicio, $request->fecha_fin]);
+    // Usar 'desde' y 'hasta' para filtrar igual que en la vista
+    if ($request->filled('desde') && $request->filled('hasta')) {
+        $query->whereBetween('created_at', [$request->desde, $request->hasta]);
     }
 
     $residuos = $query->orderByDesc('created_at')->get();
@@ -54,8 +55,8 @@ public function descargarPDF(Request $request)
     $pdf = Pdf::loadView('reportes.pdf.historial_residuos', compact('residuos'));
 
     return $pdf->download('historial_residuos.pdf');
-    
 }
+
 
 public function residuosCada15Dias()
 {

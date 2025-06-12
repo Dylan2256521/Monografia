@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="mb-4">Bienvenide al Panel de Control</h1>
+    <h1 class="mb-4">Bienvenido al Panel de Control</h1>
 
     <!-- Primera fila: 4 tarjetas -->
     <div class="row">
